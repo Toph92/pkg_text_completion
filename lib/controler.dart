@@ -32,6 +32,11 @@ class TextCompletionControler<T extends SearchEntry> {
   TextCompletionControler(
       {required this.dataSource, this.fuzzySearch = true, this.onUpdate});
 
+  void dispose() {
+    txtFieldValue.dispose();
+    onUpdate = null;
+  }
+
   updateCriteria(String? criteria) {
     criteria ??= "";
     List<String> chunks = criteria

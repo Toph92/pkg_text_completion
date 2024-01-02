@@ -187,8 +187,6 @@ class User extends SearchEntry {
           sText: lastName + (firstName ?? ''),
         );
 
-  String coucou() => "coucou";
-
   @override
   String toString() {
     return "$lastName $firstName";
@@ -212,8 +210,4 @@ class User extends SearchEntry {
       ],
     );
   }
-}
-
-class Titi {
-  String firstName = "";
 }
