@@ -22,7 +22,14 @@ class TextCompletionControler<T extends SearchEntry> {
     // sinon pas de refresh si sélection de la même valeur dans la liste.
   }
 
+  set listWidth(double value) {
+    listWidthValue.value = value;
+  }
+
+  double? initialListHeight;
+
   ValueNotifier<String?> txtFieldValue = ValueNotifier(null);
+  ValueNotifier<double?> listWidthValue = ValueNotifier(null);
 
   /// return selected item in [value]
   Function<T>(dynamic value)? onUpdate;
@@ -30,7 +37,15 @@ class TextCompletionControler<T extends SearchEntry> {
   // Il veut absolument déclarer le type avant la function.
   // et lors de l'appel un <Object> fait l'affaire. Ca sent le bug ou moi qui merde quelque part :(
   TextCompletionControler(
-      {required this.dataSource, this.fuzzySearch = true, this.onUpdate});
+      {required this.dataSource,
+      this.fuzzySearch = true,
+      this.onUpdate,
+      String? initialValue,
+      double? initialListWidth,
+      this.initialListHeight}) {
+    txtFieldValue.value = initialValue;
+    listWidthValue.value = initialListWidth;
+  }
 
   void dispose() {
     txtFieldValue.dispose();

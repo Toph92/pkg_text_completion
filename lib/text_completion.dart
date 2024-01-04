@@ -6,16 +6,12 @@ class TextCompletion extends StatefulWidget {
       {super.key,
       required this.controler,
       this.minCharacterNeeded = 0,
-      this.listWidth,
-      this.listHeight = 100,
       this.hintText = "",
       this.labelText = "",
       this.bgColorPopup = Colors.white});
 
   final TextCompletionControler controler;
   final int minCharacterNeeded;
-  final double? listWidth;
-  final double listHeight;
   final String hintText;
   final String labelText;
   final Color bgColorPopup;
@@ -37,20 +33,29 @@ class _TextCompletionState extends State<TextCompletion> {
     super.initState();
 
     widget.controler.txtFieldValue.addListener(listenerOnValue);
+    widget.controler.listWidthValue.addListener(listenerOnSetWidth);
   }
 
   void listenerOnValue() {
     txtControler.text = widget.controler.txtFieldValue.value ?? '';
   }
 
+  void listenerOnSetWidth() {
+    if (overlayEntry != null) {
+      showPopup(key: textKey);
+    }
+  }
+
   @override
   void dispose() {
     widget.controler.txtFieldValue.removeListener(listenerOnValue);
+    widget.controler.listWidthValue.removeListener(listenerOnSetWidth);
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    //print("build 2");
     //textFieldWidth = MediaQuery.of(context).size.width;
     return LayoutBuilder(builder: (context, BoxConstraints constraints) {
       textFieldWidth = constraints.maxWidth;
@@ -189,12 +194,12 @@ class _TextCompletionState extends State<TextCompletion> {
             child: Material(
               type: MaterialType.transparency,
               child: Container(
-                width: widget.listWidth ?? textFieldWidth,
-                height: widget.listHeight,
+                width: widget.controler.listWidthValue.value ?? textFieldWidth,
+                height: widget.controler.initialListHeight ?? 100,
                 decoration: BoxDecoration(
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.grey,
+                        color: Colors.black.withOpacity(0.5),
                         offset: Offset(elevation, elevation),
                         blurRadius: 6.0,
                       ),

@@ -59,18 +59,18 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  TextEditingController prenomCtrl = TextEditingController();
   late TextCompletionControler<User> txtCompletionCtrl;
 
   @override
   void initState() {
     txtCompletionCtrl = TextCompletionControler<User>(
+      //initialListWidth: 200,
+      //initialListHeight: 100,
       dataSource: users,
       onUpdate: <Object>(user) {
         user = user as User;
         print(user.firstName);
         txtCompletionCtrl.value = user.lastName;
-        prenomCtrl.text = user.firstName ?? "";
       },
     );
     super.initState();
@@ -99,53 +99,62 @@ class _MyHomePageState extends State<MyHomePage> {
             const SizedBox(
               height: 120,
             ),
-            Row(
-              children: [
-                const SizedBox(
-                  width: 200,
-                ),
-                Column(
-                  children: [
-                    Row(
-                      children: [
-                        SizedBox(
-                          width: 200,
-                          child: TextCompletion(
+            Expanded(
+              flex: 1,
+              child: Row(
+                children: [
+                  const Expanded(
+                    child: SizedBox(),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: Container(
+                      color: Colors.white,
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: ElevatedButton(
+                                onPressed: () {
+                                  txtCompletionCtrl.listWidth = 400;
+                                },
+                                child: const Text("Set size")),
+                          ),
+                          TextCompletion(
                             labelText: "Employé",
                             hintText: "Nom ou prénom",
                             controler: txtCompletionCtrl,
-                            minCharacterNeeded: 2,
-                            listWidth: 300,
-                            listHeight: 200,
+                            minCharacterNeeded: 3,
                           ),
-                        ),
-                        const SizedBox(
-                          width: 8,
-                        ),
-                        SizedBox(
-                            width: 200,
-                            child: TextField(
-                              controller: prenomCtrl,
-                            ))
-                      ],
+                          ElevatedButton(
+                              onPressed: () {
+                                txtCompletionCtrl.dataSource.addAll(
+                                    List<User>.generate(
+                                        1000,
+                                        (index) => User(
+                                            firstName:
+                                                lorem(paragraphs: 1, words: 1),
+                                            lastName:
+                                                lorem(paragraphs: 1, words: 1)
+                                                    .toUpperCase())));
+                              },
+                              child: const Text("Add 1000 users")),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: ElevatedButton(
+                                onPressed: () {
+                                  txtCompletionCtrl.value = 'coucou';
+                                },
+                                child: const Text("Set value")),
+                          ),
+                        ],
+                      ),
                     ),
-                    const SizedBox(
-                      height: 8,
-                    ),
-                    ElevatedButton(
-                        onPressed: () {
-                          txtCompletionCtrl.dataSource.addAll(
-                              List<User>.generate(
-                                  1000,
-                                  (index) => User(
-                                      firstName: lorem(paragraphs: 1, words: 1),
-                                      lastName: lorem(paragraphs: 1, words: 1)
-                                          .toUpperCase())));
-                        },
-                        child: const Text("Add 1000 users")),
-                  ],
-                ),
-              ],
+                  ),
+                  Expanded(
+                      flex: 1, child: Container(width: 20, color: Colors.green))
+                ],
+              ),
             ),
           ],
         ));
