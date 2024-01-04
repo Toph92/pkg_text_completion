@@ -64,8 +64,10 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     txtCompletionCtrl = TextCompletionControler<User>(
-      //initialListWidth: 200,
-      //initialListHeight: 100,
+      initialListHeight: 150,
+      offsetListWidth: -40,
+      minWidthList: 200,
+      //maxWidthList: 400,
       dataSource: users,
       onUpdate: <Object>(user) {
         user = user as User;

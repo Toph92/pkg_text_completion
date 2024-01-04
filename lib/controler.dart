@@ -24,7 +24,16 @@ class TextCompletionControler<T extends SearchEntry> {
 
   set listWidth(double value) {
     listWidthValue.value = value;
+    // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+    listWidthValue.notifyListeners();
+    // sinon pas de refresh si sélection de la même valeur dans la liste.
   }
+
+  double? minWidthList;
+  double? maxWidthList;
+
+  /// width offset regarding text field width. Can be negative or positive
+  double offsetListWidth;
 
   double? initialListHeight;
 
@@ -42,9 +51,12 @@ class TextCompletionControler<T extends SearchEntry> {
       this.onUpdate,
       String? initialValue,
       double? initialListWidth,
-      this.initialListHeight}) {
+      this.initialListHeight,
+      this.minWidthList,
+      this.maxWidthList,
+      this.offsetListWidth = 0}) {
     txtFieldValue.value = initialValue;
-    listWidthValue.value = initialListWidth;
+//    listWidthValue.value = offsetListWidth;
   }
 
   void dispose() {
@@ -203,6 +215,13 @@ class TextCompletionControler<T extends SearchEntry> {
 
   Color getBgColor(int indice) {
     return colorsBackground[indice % colorsBackground.length];
+  }
+
+  double getPopupListWidth(double textFieldWidth) {
+    double result = textFieldWidth + offsetListWidth;
+    if (minWidthList != null && result < minWidthList!) result = minWidthList!;
+    if (maxWidthList != null && result > maxWidthList!) result = maxWidthList!;
+    return result;
   }
 }
 

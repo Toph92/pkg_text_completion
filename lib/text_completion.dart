@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'controler.dart';
+import 'dart:async';
 
 class TextCompletion extends StatefulWidget {
   const TextCompletion(
@@ -59,63 +60,81 @@ class _TextCompletionState extends State<TextCompletion> {
     //textFieldWidth = MediaQuery.of(context).size.width;
     return LayoutBuilder(builder: (context, BoxConstraints constraints) {
       textFieldWidth = constraints.maxWidth;
+      widget.controler.listWidthValue.value ??=
+          widget.controler.getPopupListWidth(constraints.maxWidth);
       return Stack(
         children: [
           Padding(
             padding: const EdgeInsets.only(bottom: 6),
-            child: TextField(
-              key: textKey,
-              decoration: InputDecoration(
-                  hintText: widget.hintText,
-                  hintStyle: TextStyle(
-                      color: Colors.grey.shade400,
-                      fontWeight: FontWeight.w400,
-                      fontSize: 14),
-                  filled: true,
-                  fillColor: Colors.white,
-                  labelText: widget.labelText,
-                  isDense: true,
-                  border: const OutlineInputBorder(),
-                  suffixIcon: txtControler.text.isNotEmpty &&
-                          widget.controler.selectedFromList == false
-                      ? IconButton(
-                          splashRadius: 1,
-                          icon: const Icon(Icons.clear),
-                          onPressed: () {
-                            //txtControler.text = "";
-                            widget.controler.value = "";
-                            hintMessage = null;
-                            removeHighlightOverlay();
-                            setState(() {});
-                            //onRefresh?.call();
-                          },
-                        )
-                      : null),
-              controller: txtControler,
-              onChanged: (value) {
-                widget.controler.selectedFromList = false;
-                if (value.trim().length >= widget.minCharacterNeeded) {
-                  widget.controler.updateCriteria(value);
-                  if (widget.controler.dataSourceFiltered!.isNotEmpty) {
-                    hintMessage = null;
-                    showPopup(key: textKey);
-                  } else {
-                    hintMessage = "Aucun résultat";
-                    removeHighlightOverlay();
-                  }
-                } else {
-                  removeHighlightOverlay();
-                  if (txtControler.text.isNotEmpty &&
-                      widget.minCharacterNeeded > 0) {
-                    hintMessage =
-                        "${widget.minCharacterNeeded} caractère${widget.minCharacterNeeded > 1 ? 's' : ''} min.";
-                  } else {
-                    hintMessage = null;
-                  }
-                }
-                setState(() {});
-              },
-            ),
+            child: LayoutBuilder(
+                builder: (BuildContext context, BoxConstraints constraints) {
+              return NotificationListener<SizeChangedLayoutNotification>(
+                onNotification: (notification) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    widget.controler.listWidthValue.value = widget.controler
+                        .getPopupListWidth(constraints.maxWidth);
+                    // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+                    widget.controler.listWidthValue.notifyListeners();
+                  });
+                  return false;
+                },
+                child: SizeChangedLayoutNotifier(
+                  child: TextField(
+                    key: textKey,
+                    decoration: InputDecoration(
+                        hintText: widget.hintText,
+                        hintStyle: TextStyle(
+                            color: Colors.grey.shade400,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14),
+                        filled: true,
+                        fillColor: Colors.white,
+                        labelText: widget.labelText,
+                        isDense: true,
+                        border: const OutlineInputBorder(),
+                        suffixIcon: txtControler.text.isNotEmpty &&
+                                widget.controler.selectedFromList == false
+                            ? IconButton(
+                                splashRadius: 1,
+                                icon: const Icon(Icons.clear),
+                                onPressed: () {
+                                  //txtControler.text = "";
+                                  widget.controler.value = "";
+                                  hintMessage = null;
+                                  removeHighlightOverlay();
+                                  setState(() {});
+                                  //onRefresh?.call();
+                                },
+                              )
+                            : null),
+                    controller: txtControler,
+                    onChanged: (value) {
+                      widget.controler.selectedFromList = false;
+                      if (value.trim().length >= widget.minCharacterNeeded) {
+                        widget.controler.updateCriteria(value);
+                        if (widget.controler.dataSourceFiltered!.isNotEmpty) {
+                          hintMessage = null;
+                          showPopup(key: textKey);
+                        } else {
+                          hintMessage = "Aucun résultat";
+                          removeHighlightOverlay();
+                        }
+                      } else {
+                        removeHighlightOverlay();
+                        if (txtControler.text.isNotEmpty &&
+                            widget.minCharacterNeeded > 0) {
+                          hintMessage =
+                              "${widget.minCharacterNeeded} caractère${widget.minCharacterNeeded > 1 ? 's' : ''} min.";
+                        } else {
+                          hintMessage = null;
+                        }
+                      }
+                      setState(() {});
+                    },
+                  ),
+                ),
+              );
+            }),
           ),
           if (hintMessage != null)
             Positioned(
