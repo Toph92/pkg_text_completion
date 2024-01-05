@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'controler.dart';
 import 'dart:async';
+import 'dart:io';
 
 class TextCompletion extends StatefulWidget {
   const TextCompletion(
@@ -33,12 +34,13 @@ class _TextCompletionState extends State<TextCompletion> {
   void initState() {
     super.initState();
 
-    widget.controler.txtFieldValue.addListener(listenerOnValue);
-    widget.controler.listWidthValue.addListener(listenerOnSetWidth);
+    widget.controler.txtFieldNotifier.addListener(listenerOnValue);
+    widget.controler.listWidthNotifier.addListener(listenerOnSetWidth);
+    widget.controler.closeNotifier.addListener(listenerOnClose);
   }
 
   void listenerOnValue() {
-    txtControler.text = widget.controler.txtFieldValue.value ?? '';
+    txtControler.text = widget.controler.txtFieldNotifier.value ?? '';
   }
 
   void listenerOnSetWidth() {
@@ -47,10 +49,16 @@ class _TextCompletionState extends State<TextCompletion> {
     }
   }
 
+  void listenerOnClose() {
+    removeHighlightOverlay();
+    widget.controler.closeNotifier.value = false;
+  }
+
   @override
   void dispose() {
-    widget.controler.txtFieldValue.removeListener(listenerOnValue);
-    widget.controler.listWidthValue.removeListener(listenerOnSetWidth);
+    widget.controler.txtFieldNotifier.removeListener(listenerOnValue);
+    widget.controler.listWidthNotifier.removeListener(listenerOnSetWidth);
+    widget.controler.closeNotifier.removeListener(listenerOnClose);
     super.dispose();
   }
 
@@ -60,7 +68,7 @@ class _TextCompletionState extends State<TextCompletion> {
     //textFieldWidth = MediaQuery.of(context).size.width;
     return LayoutBuilder(builder: (context, BoxConstraints constraints) {
       textFieldWidth = constraints.maxWidth;
-      widget.controler.listWidthValue.value ??=
+      widget.controler.listWidthNotifier.value ??=
           widget.controler.getPopupListWidth(constraints.maxWidth);
       return Stack(
         children: [
@@ -71,10 +79,10 @@ class _TextCompletionState extends State<TextCompletion> {
               return NotificationListener<SizeChangedLayoutNotification>(
                 onNotification: (notification) {
                   WidgetsBinding.instance.addPostFrameCallback((_) {
-                    widget.controler.listWidthValue.value = widget.controler
+                    widget.controler.listWidthNotifier.value = widget.controler
                         .getPopupListWidth(constraints.maxWidth);
                     // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-                    widget.controler.listWidthValue.notifyListeners();
+                    widget.controler.listWidthNotifier.notifyListeners();
                   });
                   return false;
                 },
@@ -207,13 +215,14 @@ class _TextCompletionState extends State<TextCompletion> {
         // Align is used to position the highlight overlay
         // relative to the NavigationBar destination.
         return Positioned(
-          top: position.dy + 50,
+          top: Platform.isAndroid ? position.dy + 40 : position.dy + 50,
           left: position.dx + 0,
           child: SafeArea(
             child: Material(
               type: MaterialType.transparency,
               child: Container(
-                width: widget.controler.listWidthValue.value ?? textFieldWidth,
+                width:
+                    widget.controler.listWidthNotifier.value ?? textFieldWidth,
                 height: widget.controler.initialListHeight ?? 100,
                 decoration: BoxDecoration(
                     boxShadow: [

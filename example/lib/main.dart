@@ -99,7 +99,7 @@ class _MyHomePageState extends State<MyHomePage> {
         body: Column(
           children: [
             const SizedBox(
-              height: 120,
+              height: 20,
             ),
             Expanded(
               flex: 1,
@@ -121,6 +121,14 @@ class _MyHomePageState extends State<MyHomePage> {
                                   txtCompletionCtrl.listWidth = 400;
                                 },
                                 child: const Text("Set size")),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: ElevatedButton(
+                                onPressed: () {
+                                  txtCompletionCtrl.close();
+                                },
+                                child: const Text("Close")),
                           ),
                           TextCompletion(
                             labelText: "Employé",

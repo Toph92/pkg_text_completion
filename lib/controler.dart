@@ -16,16 +16,24 @@ class TextCompletionControler<T extends SearchEntry> {
 
   /// set text value to TextField
   set value(String value) {
-    txtFieldValue.value = value;
+    txtFieldNotifier.value = value;
     // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-    txtFieldValue.notifyListeners();
+    txtFieldNotifier.notifyListeners();
     // sinon pas de refresh si sélection de la même valeur dans la liste.
   }
 
+  close() {
+    closeNotifier.value = true;
+
+    /* // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+    closeNotifier.notifyListeners();
+    // sinon pas de refresh si sélection de la même valeur dans la liste. */
+  }
+
   set listWidth(double value) {
-    listWidthValue.value = value;
+    listWidthNotifier.value = value;
     // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-    listWidthValue.notifyListeners();
+    listWidthNotifier.notifyListeners();
     // sinon pas de refresh si sélection de la même valeur dans la liste.
   }
 
@@ -37,8 +45,9 @@ class TextCompletionControler<T extends SearchEntry> {
 
   double? initialListHeight;
 
-  ValueNotifier<String?> txtFieldValue = ValueNotifier(null);
-  ValueNotifier<double?> listWidthValue = ValueNotifier(null);
+  ValueNotifier<String?> txtFieldNotifier = ValueNotifier(null);
+  ValueNotifier<double?> listWidthNotifier = ValueNotifier(null);
+  ValueNotifier<bool> closeNotifier = ValueNotifier(false);
 
   /// return selected item in [value]
   Function<T>(dynamic value)? onUpdate;
@@ -55,12 +64,14 @@ class TextCompletionControler<T extends SearchEntry> {
       this.minWidthList,
       this.maxWidthList,
       this.offsetListWidth = 0}) {
-    txtFieldValue.value = initialValue;
+    txtFieldNotifier.value = initialValue;
 //    listWidthValue.value = offsetListWidth;
   }
 
   void dispose() {
-    txtFieldValue.dispose();
+    txtFieldNotifier.dispose();
+    listWidthNotifier.dispose();
+    closeNotifier.dispose();
     onUpdate = null;
   }
 
