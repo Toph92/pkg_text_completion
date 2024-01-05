@@ -68,7 +68,6 @@ class TextCompletionControler<T extends SearchEntry> {
       this.offsetListWidth = 0}) {
     txtFieldNotifier.value = initialValue;
     focusNodeTextField.addListener(() {
-      //print('1:  ${focusNodeTextField.hasFocus}');
       if (focusNodeTextField.hasFocus == false) {
         // pour laisser le temps au clic sur la liste de fonctionner
         Future.delayed(const Duration(milliseconds: 100)).then(

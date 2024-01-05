@@ -3,14 +3,16 @@ import 'controler.dart';
 import 'dart:io';
 
 class TextCompletion extends StatefulWidget {
-  const TextCompletion(
+  TextCompletion(
       {super.key,
       required this.controler,
       this.minCharacterNeeded = 0,
       this.hintText = "",
       this.labelText = "",
       this.bgColorPopup = Colors.white,
-      this.txtStyle});
+      this.txtStyle}) {
+    //print("Init Value=${controler.value}");
+  }
 
   final TextCompletionControler controler;
   final int minCharacterNeeded;
@@ -38,6 +40,9 @@ class _TextCompletionState extends State<TextCompletion> {
     widget.controler.txtFieldNotifier.addListener(listenerOnValue);
     widget.controler.listWidthNotifier.addListener(listenerOnSetWidth);
     widget.controler.closeNotifier.addListener(listenerOnClose);
+
+    widget.controler.txtControler.text =
+        widget.controler.txtFieldNotifier.value ?? '';
   }
 
   void listenerOnValue() {

@@ -76,6 +76,7 @@ class _MyHomePageState extends State<MyHomePage> {
         txtCompletionCtrl.value = user.lastName;
       },
     );
+    //txtCompletionCtrl.value = "coucou 1";
     super.initState();
   }
 
