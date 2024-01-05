@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'controler.dart';
-import 'dart:async';
 import 'dart:io';
 
 class TextCompletion extends StatefulWidget {
@@ -24,7 +23,7 @@ class TextCompletion extends StatefulWidget {
 
 class _TextCompletionState extends State<TextCompletion> {
   final GlobalKey textKey = GlobalKey();
-  TextEditingController txtControler = TextEditingController();
+  //TextEditingController txtControler = TextEditingController();
   OverlayEntry? overlayEntry;
   final GlobalKey overlayKey = GlobalKey();
   double? textFieldWidth;
@@ -40,7 +39,8 @@ class _TextCompletionState extends State<TextCompletion> {
   }
 
   void listenerOnValue() {
-    txtControler.text = widget.controler.txtFieldNotifier.value ?? '';
+    widget.controler.txtControler.text =
+        widget.controler.txtFieldNotifier.value ?? '';
   }
 
   void listenerOnSetWidth() {
@@ -100,22 +100,24 @@ class _TextCompletionState extends State<TextCompletion> {
                         labelText: widget.labelText,
                         isDense: true,
                         border: const OutlineInputBorder(),
-                        suffixIcon: txtControler.text.isNotEmpty &&
-                                widget.controler.selectedFromList == false
-                            ? IconButton(
-                                splashRadius: 1,
-                                icon: const Icon(Icons.clear),
-                                onPressed: () {
-                                  //txtControler.text = "";
-                                  widget.controler.value = "";
-                                  hintMessage = null;
-                                  removeHighlightOverlay();
-                                  setState(() {});
-                                  //onRefresh?.call();
-                                },
-                              )
-                            : null),
-                    controller: txtControler,
+                        suffixIcon:
+                            widget.controler.txtControler.text.isNotEmpty &&
+                                    widget.controler.selectedFromList == false
+                                ? IconButton(
+                                    splashRadius: 1,
+                                    icon: const Icon(Icons.clear),
+                                    onPressed: () {
+                                      //txtControler.text = "";
+                                      widget.controler.value = "";
+                                      hintMessage = null;
+                                      removeHighlightOverlay();
+                                      if (mounted) {
+                                        setState(() {});
+                                      }
+                                    },
+                                  )
+                                : null),
+                    controller: widget.controler.txtControler,
                     onChanged: (value) {
                       widget.controler.selectedFromList = false;
                       if (value.trim().length >= widget.minCharacterNeeded) {
@@ -129,7 +131,7 @@ class _TextCompletionState extends State<TextCompletion> {
                         }
                       } else {
                         removeHighlightOverlay();
-                        if (txtControler.text.isNotEmpty &&
+                        if (widget.controler.txtControler.text.isNotEmpty &&
                             widget.minCharacterNeeded > 0) {
                           hintMessage =
                               "${widget.minCharacterNeeded} caractère${widget.minCharacterNeeded > 1 ? 's' : ''} min.";
@@ -137,7 +139,9 @@ class _TextCompletionState extends State<TextCompletion> {
                           hintMessage = null;
                         }
                       }
-                      setState(() {});
+                      if (mounted) {
+                        setState(() {});
+                      }
                     },
                   ),
                 ),
@@ -276,7 +280,9 @@ class _TextCompletionState extends State<TextCompletion> {
                                           .dataSourceFiltered![index]);
                                       removeHighlightOverlay();
                                       widget.controler.selectedFromList = true;
-                                      setState(() {});
+                                      if (mounted) {
+                                        setState(() {});
+                                      }
                                     },
                                     leading: widget
                                             .controler

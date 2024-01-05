@@ -60,6 +60,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   late TextCompletionControler<User> txtCompletionCtrl;
+  TextEditingController prenomCtrl = TextEditingController();
 
   @override
   void initState() {
@@ -96,78 +97,117 @@ class _MyHomePageState extends State<MyHomePage> {
           // the App.build method, and use it to set our appbar title.
           title: Text(widget.title),
         ),
-        body: Column(
-          children: [
-            const SizedBox(
-              height: 20,
-            ),
-            Expanded(
-              flex: 1,
-              child: Row(
-                children: [
-                  const Expanded(
-                    child: SizedBox(),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: Container(
-                      color: Colors.white,
-                      child: Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: ElevatedButton(
+        body: OrientationBuilder(
+            builder: (BuildContext context, Orientation direction) {
+          return Column(
+            children: [
+              const SizedBox(
+                height: 20,
+              ),
+              Expanded(
+                flex: 1,
+                child: Row(
+                  children: [
+                    const Expanded(
+                      child: SizedBox(),
+                    ),
+                    Expanded(
+                      flex: 2,
+                      child: Container(
+                        color: Colors.white,
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: ElevatedButton(
+                                  onPressed: () {
+                                    txtCompletionCtrl.listWidth = 400;
+                                  },
+                                  child: const Text("Set size")),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: ElevatedButton(
+                                  onPressed: () {
+                                    txtCompletionCtrl.close();
+                                  },
+                                  child: const Text("Close")),
+                            ),
+                            direction == Orientation.landscape
+                                ? Row(
+                                    children: [
+                                      SizedBox(
+                                        width: 200,
+                                        height: 54,
+                                        child: TextCompletion(
+                                          labelText: "Employé",
+                                          hintText: "Nom ou prénom",
+                                          controler: txtCompletionCtrl,
+                                          minCharacterNeeded: 3,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 200,
+                                        height: 54,
+                                        child:
+                                            TextField(controller: prenomCtrl),
+                                      )
+                                    ],
+                                  )
+                                : Column(
+                                    children: [
+                                      SizedBox(
+                                        width: 200,
+                                        height: 54,
+                                        child: TextCompletion(
+                                          labelText: "Employé",
+                                          hintText: "Nom ou prénom",
+                                          controler: txtCompletionCtrl,
+                                          minCharacterNeeded: 3,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 200,
+                                        height: 54,
+                                        child:
+                                            TextField(controller: prenomCtrl),
+                                      )
+                                    ],
+                                  ),
+                            ElevatedButton(
                                 onPressed: () {
-                                  txtCompletionCtrl.listWidth = 400;
+                                  txtCompletionCtrl.dataSource.addAll(
+                                      List<User>.generate(
+                                          1000,
+                                          (index) => User(
+                                              firstName: lorem(
+                                                  paragraphs: 1, words: 1),
+                                              lastName:
+                                                  lorem(paragraphs: 1, words: 1)
+                                                      .toUpperCase())));
                                 },
-                                child: const Text("Set size")),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: ElevatedButton(
-                                onPressed: () {
-                                  txtCompletionCtrl.close();
-                                },
-                                child: const Text("Close")),
-                          ),
-                          TextCompletion(
-                            labelText: "Employé",
-                            hintText: "Nom ou prénom",
-                            controler: txtCompletionCtrl,
-                            minCharacterNeeded: 3,
-                          ),
-                          ElevatedButton(
-                              onPressed: () {
-                                txtCompletionCtrl.dataSource.addAll(
-                                    List<User>.generate(
-                                        1000,
-                                        (index) => User(
-                                            firstName:
-                                                lorem(paragraphs: 1, words: 1),
-                                            lastName:
-                                                lorem(paragraphs: 1, words: 1)
-                                                    .toUpperCase())));
-                              },
-                              child: const Text("Add 1000 users")),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: ElevatedButton(
-                                onPressed: () {
-                                  txtCompletionCtrl.value = 'coucou';
-                                },
-                                child: const Text("Set value")),
-                          ),
-                        ],
+                                child: const Text("Add 1000 users")),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: ElevatedButton(
+                                  onPressed: () {
+                                    txtCompletionCtrl.value = 'coucou';
+                                  },
+                                  child: const Text("Set value")),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                  Expanded(
-                      flex: 1, child: Container(width: 20, color: Colors.green))
-                ],
+                    Expanded(
+                        flex: 1,
+                        child: Container(width: 20, color: Colors.green))
+                  ],
+                ),
               ),
-            ),
-          ],
-        ));
+            ],
+          );
+        }));
   }
 }
 

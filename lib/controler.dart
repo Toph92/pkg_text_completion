@@ -13,6 +13,7 @@ class TextCompletionControler<T extends SearchEntry> {
   List<String>? arCriteria;
   bool fuzzySearch;
   bool selectedFromList = false; // true if selected in list
+  TextEditingController txtControler = TextEditingController();
 
   /// set text value to TextField
   set value(String value) {
@@ -72,6 +73,7 @@ class TextCompletionControler<T extends SearchEntry> {
     txtFieldNotifier.dispose();
     listWidthNotifier.dispose();
     closeNotifier.dispose();
+    txtControler.dispose();
     onUpdate = null;
   }
 
