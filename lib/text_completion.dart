@@ -89,6 +89,7 @@ class _TextCompletionState extends State<TextCompletion> {
                 child: SizeChangedLayoutNotifier(
                   child: TextField(
                     key: textKey,
+                    focusNode: widget.controler.focusNodeTextField,
                     decoration: InputDecoration(
                         hintText: widget.hintText,
                         hintStyle: TextStyle(

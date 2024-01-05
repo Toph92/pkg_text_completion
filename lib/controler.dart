@@ -45,6 +45,7 @@ class TextCompletionControler<T extends SearchEntry> {
   double offsetListWidth;
 
   double? initialListHeight;
+  final FocusNode focusNodeTextField = FocusNode();
 
   ValueNotifier<String?> txtFieldNotifier = ValueNotifier(null);
   ValueNotifier<double?> listWidthNotifier = ValueNotifier(null);
@@ -66,6 +67,12 @@ class TextCompletionControler<T extends SearchEntry> {
       this.maxWidthList,
       this.offsetListWidth = 0}) {
     txtFieldNotifier.value = initialValue;
+    focusNodeTextField.addListener(() {
+      //print('1:  ${focusNodeTextField.hasFocus}');
+      if (focusNodeTextField.hasFocus == false) {
+        close();
+      }
+    });
 //    listWidthValue.value = offsetListWidth;
   }
 
@@ -75,6 +82,7 @@ class TextCompletionControler<T extends SearchEntry> {
     closeNotifier.dispose();
     txtControler.dispose();
     onUpdate = null;
+    focusNodeTextField.dispose();
   }
 
   updateCriteria(String? criteria) {
