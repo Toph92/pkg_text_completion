@@ -70,6 +70,7 @@ class TextCompletionControler<T extends SearchEntry> {
     focusNodeTextField.addListener(() {
       //print('1:  ${focusNodeTextField.hasFocus}');
       if (focusNodeTextField.hasFocus == false) {
+        // pour laisser le temps au clic sur la liste de fonctionner
         Future.delayed(const Duration(milliseconds: 100)).then(
           (value) {
             close();

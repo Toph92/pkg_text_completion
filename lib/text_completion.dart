@@ -9,13 +9,15 @@ class TextCompletion extends StatefulWidget {
       this.minCharacterNeeded = 0,
       this.hintText = "",
       this.labelText = "",
-      this.bgColorPopup = Colors.white});
+      this.bgColorPopup = Colors.white,
+      this.txtStyle});
 
   final TextCompletionControler controler;
   final int minCharacterNeeded;
   final String hintText;
   final String labelText;
   final Color bgColorPopup;
+  final TextStyle? txtStyle;
 
   @override
   State<TextCompletion> createState() => _TextCompletionState();
@@ -144,6 +146,7 @@ class _TextCompletionState extends State<TextCompletion> {
                         setState(() {});
                       }
                     },
+                    style: widget.txtStyle,
                   ),
                 ),
               );
