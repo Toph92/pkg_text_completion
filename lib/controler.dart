@@ -31,6 +31,8 @@ class TextCompletionControler<T extends SearchEntry> {
     // sinon pas de refresh si sélection de la même valeur dans la liste. */
   }
 
+  Function(String value)? onChangeValue;
+
   set listWidth(double value) {
     listWidthNotifier.value = value;
     // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
@@ -52,20 +54,21 @@ class TextCompletionControler<T extends SearchEntry> {
   ValueNotifier<bool> closeNotifier = ValueNotifier(false);
 
   /// return selected item in [value]
-  Function<T>(dynamic value)? onUpdate;
+  Function<T>(dynamic value)? onSelected;
   // bof, j'étais parti sur Function(T value)? onUpdate; mais cela ne marche pas au niveau du call()
   // Il veut absolument déclarer le type avant la function.
   // et lors de l'appel un <Object> fait l'affaire. Ca sent le bug ou moi qui merde quelque part :(
   TextCompletionControler(
       {required this.dataSource,
       this.fuzzySearch = true,
-      this.onUpdate,
+      this.onSelected,
       String? initialValue,
       double? initialListWidth,
       this.initialListHeight,
       this.minWidthList,
       this.maxWidthList,
-      this.offsetListWidth = 0}) {
+      this.offsetListWidth = 0,
+      this.onChangeValue}) {
     txtFieldNotifier.value = initialValue;
     focusNodeTextField.addListener(() {
       if (focusNodeTextField.hasFocus == false) {
@@ -85,7 +88,7 @@ class TextCompletionControler<T extends SearchEntry> {
     listWidthNotifier.dispose();
     closeNotifier.dispose();
     txtControler.dispose();
-    onUpdate = null;
+    onSelected = null;
     focusNodeTextField.dispose();
   }
 

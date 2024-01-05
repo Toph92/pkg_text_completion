@@ -65,12 +65,15 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     txtCompletionCtrl = TextCompletionControler<User>(
+      onChangeValue: (value) {
+        print("Value=$value");
+      },
       initialListHeight: 150,
       offsetListWidth: -40,
       minWidthList: 200,
       //maxWidthList: 400,
       dataSource: users,
-      onUpdate: <Object>(user) {
+      onSelected: <Object>(user) {
         user = user as User;
         print(user.firstName);
         txtCompletionCtrl.value = user.lastName;

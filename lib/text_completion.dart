@@ -147,6 +147,7 @@ class _TextCompletionState extends State<TextCompletion> {
                           hintMessage = null;
                         }
                       }
+                      widget.controler.onChangeValue?.call(value);
                       if (mounted) {
                         setState(() {});
                       }
@@ -284,7 +285,7 @@ class _TextCompletionState extends State<TextCompletion> {
                                     dense: true,
                                     hoverColor: Colors.yellow,
                                     onTap: () {
-                                      widget.controler.onUpdate?.call(widget
+                                      widget.controler.onSelected?.call(widget
                                           .controler
                                           .dataSourceFiltered![index]);
                                       removeHighlightOverlay();
