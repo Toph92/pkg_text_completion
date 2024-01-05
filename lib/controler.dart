@@ -70,7 +70,11 @@ class TextCompletionControler<T extends SearchEntry> {
     focusNodeTextField.addListener(() {
       //print('1:  ${focusNodeTextField.hasFocus}');
       if (focusNodeTextField.hasFocus == false) {
-        close();
+        Future.delayed(const Duration(milliseconds: 100)).then(
+          (value) {
+            close();
+          },
+        );
       }
     });
 //    listWidthValue.value = offsetListWidth;
