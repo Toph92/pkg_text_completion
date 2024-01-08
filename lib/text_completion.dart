@@ -32,6 +32,7 @@ class _TextCompletionState extends State<TextCompletion> {
   final GlobalKey overlayKey = GlobalKey();
   double? textFieldWidth;
   String? hintMessage;
+  double? heightTextField;
 
   @override
   void initState() {
@@ -71,8 +72,6 @@ class _TextCompletionState extends State<TextCompletion> {
 
   @override
   Widget build(BuildContext context) {
-    //print("build 2");
-    //textFieldWidth = MediaQuery.of(context).size.width;
     return LayoutBuilder(builder: (context, BoxConstraints constraints) {
       textFieldWidth = constraints.maxWidth;
       widget.controler.listWidthNotifier.value ??=
@@ -94,66 +93,49 @@ class _TextCompletionState extends State<TextCompletion> {
                   return false;
                 },
                 child: SizeChangedLayoutNotifier(
-                  child: TextField(
-                    key: textKey,
-                    focusNode: widget.controler.focusNodeTextField,
-                    decoration: InputDecoration(
-                        hintText: widget.hintText,
-                        hintStyle: TextStyle(
-                            color: Colors.grey.shade400,
-                            fontWeight: FontWeight.w400,
-                            fontSize: 14),
-                        filled: true,
-                        fillColor: Colors.white,
-                        labelText: widget.labelText,
-                        isDense: true,
-                        border: const OutlineInputBorder(),
-                        suffixIcon:
-                            widget.controler.txtControler.text.isNotEmpty &&
-                                    widget.controler.selectedFromList == false
-                                ? IconButton(
-                                    splashRadius: 1,
-                                    icon: const Icon(Icons.clear),
-                                    onPressed: () {
-                                      //txtControler.text = "";
-                                      widget.controler.value = "";
-                                      hintMessage = null;
-                                      removeHighlightOverlay();
-                                      if (mounted) {
-                                        setState(() {});
-                                      }
-                                    },
-                                  )
-                                : null),
-                    controller: widget.controler.txtControler,
-                    onChanged: (value) {
-                      widget.controler.selectedFromList = false;
-                      if (value.trim().length >= widget.minCharacterNeeded) {
-                        widget.controler.updateCriteria(value);
-                        if (widget.controler.dataSourceFiltered!.isNotEmpty) {
-                          hintMessage = null;
-                          showPopup(key: textKey);
-                        } else {
-                          hintMessage = "Aucun résultat";
-                          removeHighlightOverlay();
-                        }
-                      } else {
-                        removeHighlightOverlay();
-                        if (widget.controler.txtControler.text.isNotEmpty &&
-                            widget.minCharacterNeeded > 0) {
-                          hintMessage =
-                              "${widget.minCharacterNeeded} caractère${widget.minCharacterNeeded > 1 ? 's' : ''} min.";
-                        } else {
-                          hintMessage = null;
-                        }
-                      }
-                      widget.controler.onChangeValue?.call(value);
-                      if (mounted) {
-                        setState(() {});
-                      }
-                    },
-                    style: widget.txtStyle,
-                  ),
+                  child: Builder(builder: (context) {
+                    return TextField(
+                      key: textKey,
+                      focusNode: widget.controler.focusNodeTextField,
+                      decoration: InputDecoration(
+                          hintText: widget.hintText,
+                          hintStyle: TextStyle(
+                              color: Colors.grey.shade400,
+                              fontWeight: FontWeight.w400,
+                              fontSize: 14),
+                          filled: true,
+                          fillColor: Colors.white,
+                          labelText: widget.labelText,
+                          isDense: true,
+                          border: const OutlineInputBorder(),
+                          suffixIcon:
+                              widget.controler.txtControler.text.isNotEmpty &&
+                                      widget.controler.selectedFromList == false
+                                  ? IconButton(
+                                      splashRadius: 1,
+                                      icon: const Icon(Icons.clear),
+                                      onPressed: () {
+                                        //txtControler.text = "";
+                                        widget.controler.value = "";
+                                        hintMessage = null;
+                                        removeHighlightOverlay();
+                                        if (mounted) {
+                                          setState(() {});
+                                        }
+                                      },
+                                    )
+                                  : null),
+                      controller: widget.controler.txtControler,
+                      //onChanged: onChangedTxtCompletion,
+                      onChanged: (value) {
+                        RenderBox renderBox =
+                            context.findRenderObject() as RenderBox;
+                        heightTextField = renderBox.size.height;
+                        onChangedTxtCompletion(value);
+                      },
+                      style: widget.txtStyle,
+                    );
+                  }),
                 ),
               );
             }),
@@ -196,6 +178,33 @@ class _TextCompletionState extends State<TextCompletion> {
     });
   }
 
+  void onChangedTxtCompletion(String value) {
+    widget.controler.selectedFromList = false;
+    if (value.trim().length >= widget.minCharacterNeeded) {
+      widget.controler.updateCriteria(value);
+      if (widget.controler.dataSourceFiltered!.isNotEmpty) {
+        hintMessage = null;
+        showPopup(key: textKey);
+      } else {
+        hintMessage = "Aucun résultat";
+        removeHighlightOverlay();
+      }
+    } else {
+      removeHighlightOverlay();
+      if (widget.controler.txtControler.text.isNotEmpty &&
+          widget.minCharacterNeeded > 0) {
+        hintMessage =
+            "${widget.minCharacterNeeded} caractère${widget.minCharacterNeeded > 1 ? 's' : ''} min.";
+      } else {
+        hintMessage = null;
+      }
+    }
+    widget.controler.onChangeValue?.call(value);
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
   void showPopup({required GlobalKey key}) {
     RenderBox buttonRenderBox =
         key.currentContext!.findRenderObject() as RenderBox;
@@ -229,7 +238,8 @@ class _TextCompletionState extends State<TextCompletion> {
         // Align is used to position the highlight overlay
         // relative to the NavigationBar destination.
         return Positioned(
-          top: Platform.isAndroid ? position.dy + 40 : position.dy + 50,
+          //top: Platform.isAndroid ? position.dy + 28 : position.dy + 50,
+          top: position.dy + (heightTextField ?? 0.0) + 4,
           left: position.dx + 0,
           child: SafeArea(
             child: Material(

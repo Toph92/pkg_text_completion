@@ -137,47 +137,16 @@ class _MyHomePageState extends State<MyHomePage> {
                                   },
                                   child: const Text("Close")),
                             ),
-                            direction == Orientation.landscape
-                                ? Row(
-                                    children: [
-                                      SizedBox(
-                                        width: 200,
-                                        height: 54,
-                                        child: TextCompletion(
-                                          labelText: "Employé",
-                                          hintText: "Nom ou prénom",
-                                          controler: txtCompletionCtrl,
-                                          minCharacterNeeded: 3,
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        width: 200,
-                                        height: 54,
-                                        child:
-                                            TextField(controller: prenomCtrl),
-                                      )
-                                    ],
-                                  )
-                                : Column(
-                                    children: [
-                                      SizedBox(
-                                        width: 200,
-                                        height: 54,
-                                        child: TextCompletion(
-                                          labelText: "Employé",
-                                          hintText: "Nom ou prénom",
-                                          controler: txtCompletionCtrl,
-                                          minCharacterNeeded: 3,
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        width: 200,
-                                        height: 54,
-                                        child:
-                                            TextField(controller: prenomCtrl),
-                                      )
-                                    ],
-                                  ),
+                            SizedBox(
+                              width: 200,
+                              child: TextCompletion(
+                                labelText: "Employé",
+                                hintText: "Nom ou prénom",
+                                controler: txtCompletionCtrl,
+                                minCharacterNeeded: 3,
+                                txtStyle: const TextStyle(fontSize: 24),
+                              ),
+                            ),
                             ElevatedButton(
                                 onPressed: () {
                                   txtCompletionCtrl.dataSource.addAll(

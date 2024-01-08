@@ -1,6 +1,6 @@
 name: pkg_text_completion
 description: "A new Flutter package project."
-version: 0.0.10
+version: 0.0.12
 homepage:
 
 environment:
