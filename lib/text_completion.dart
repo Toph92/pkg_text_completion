@@ -239,7 +239,10 @@ class _TextCompletionState extends State<TextCompletion> {
         // relative to the NavigationBar destination.
         return Positioned(
           //top: Platform.isAndroid ? position.dy + 28 : position.dy + 50,
-          top: position.dy + (heightTextField ?? 0.0) + 4,
+          top: position.dy +
+              (heightTextField ?? 0.0) +
+              4 +
+              (Platform.isAndroid ? -24.0 : 0.0),
           left: position.dx + 0,
           child: SafeArea(
             child: Material(

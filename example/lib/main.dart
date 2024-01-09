@@ -144,7 +144,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 hintText: "Nom ou prénom",
                                 controler: txtCompletionCtrl,
                                 minCharacterNeeded: 3,
-                                txtStyle: const TextStyle(fontSize: 24),
+                                txtStyle: const TextStyle(fontSize: 14),
                               ),
                             ),
                             ElevatedButton(
